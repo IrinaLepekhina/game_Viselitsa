@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-# top-level documentation comment
+# Класс WordReader, отвечающий за чтение слова для игры.
 class WordReader
   def read_from_files(file_name)
-    file = File.new(file_name, 'r:UTF-8')
-    lines = file.readlines
-    file.close
+    f = File.new(file_name, 'r:UTF-8')
+    lines = f.readlines
+    f.close
     lines.sample.chomp
   rescue SystemCallError => e
-    #puts e.message
-    raise OpenException
+    puts e.message
+    raise OpenException, 'No file'
+
+    ### поправить обработку ошибок
   end
 end

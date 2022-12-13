@@ -11,25 +11,21 @@ end
 
 current_path = File.dirname(__FILE__)
 
-require "#{current_path}/game.rb"
-require "#{current_path}/resultprinter.rb"
-require "#{current_path}/word_reader.rb"
+require "#{current_path}/lib/game.rb"
+require "#{current_path}/lib/result_printer.rb"
+require "#{current_path}/lib/word_reader.rb"
+require "#{current_path}/lib/exeption.rb"
 
+reader = WordReader.new
+word = reader.read_from_files("#{current_path}/data/words.txt")
 
-begin
-  reader = WordReader.new
-  slovo = reader.read_from_files("#{current_path}/data/words.txt")
-rescue OpenException
-  abort 'Файл со словами не найден!'
-end
-
-game = Game.new(slovo)
-printer = ResultPrinter.new
+game = Game.new(word)
+printer = ResultPrinter.new(game)
 
 puts 'Игра виселица. Версия 3.'
 sleep 1
 
-while game.status.zero?
+while game.in_progress?
   printer.print_status(game)
   game.ask_next_letter
 end

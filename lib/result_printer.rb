@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-# top-level documentation comment
+# Класс ResultPrinter, печатающий состояние и результаты игры.
 class ResultPrinter
-  def initialize
+  def initialize(game)
     @status_image = []
     current_path = File.dirname(__FILE__)
     counter = 0
 
-    while counter <= 7
-      file_name = current_path + "/image/#{counter}.txt"
+    while counter <= game.max_errors
+      file_name = current_path + "/../image/#{counter}.txt"
       begin
         f = File.new(file_name, 'r:UTF-8')
         @status_image << f.read
@@ -22,34 +22,30 @@ class ResultPrinter
   end
 
   def print_status(game)
-    cls
+    # cls
 
     puts "\nСлово: #{get_word_for_print(game.letters, game.good_letters)}"
     puts "Ошибки (#{game.errors}): #{game.bad_letters.join(', ')}"
 
     print_viselitsa(game.errors)
 
-    if game.errors >= 7
+    if game.lost?
       puts 'Вы проиграли'
-    elsif game.letters.uniq.size == game.good_letters.uniq.size
+    elsif game.won?
       puts 'Поздравляем, вы выиграли!'
     else
-      puts "У вас осталось попыток: #{7 - game.errors}"
+      puts "У вас осталось попыток: #{game.errors_left}"
     end
   end
 
   def get_word_for_print(letters, good_letters)
     result = ''
 
-    letters.each do |item|
-      result += if good_letters.include?(item)
-                  "#{item} "
-                elsif (good_letters.include?('е') && item == 'ё') || (good_letters.include?('ё') && item == 'е')
-                  'ёе '
-                elsif (good_letters.include?('и') && item == 'й') || (good_letters.include?('й') && item == 'и')
-                  'ий '
+    letters.each do |letter|
+      result += if good_letters.include?(letter)
+                  "#{letter} "
                 else
-                  ' _ '
+                  '__ '
                 end
     end
 
